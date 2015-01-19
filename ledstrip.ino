@@ -29,6 +29,16 @@
 // #define DATA_0 (PORTC &=  0XFE)    // DATA 0    // for UNO
 // #define STRIP_PINOUT (DDRC=0xFF)    // for UNO
 
+// Config for distance sensor
+int trigPin = 11;
+int echoPin = 12;
+long duration, distance, fr;
+
+
+
+
+
+// LED strip patterns
 PROGMEM const unsigned long pattern_test_red[10][10]={
   {0xff0000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000},
   {0x000000,0xff0000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000},
@@ -133,9 +143,6 @@ PROGMEM const unsigned long pattern_test_rainbow[10][10]={
   {0xff7f00,0xffff00,0x00ff00,0x0000ff,0x6f00ff,0x8f00ff,0x000000,0x000000,0x000000,0xff0000},
 };
 
-
-
-
 // ***********************************************************************************************************
 // *
 // *                            Power Up Init.
@@ -144,11 +151,15 @@ PROGMEM const unsigned long pattern_test_rainbow[10][10]={
 // ***********************************************************************************************************
 void setup() {
 
+  // LED Strip
   STRIP_PINOUT;        // set output pin - DEBUG: should auto detect which mother board for use
-
   reset_strip();
   //noInterrupts();
 
+  // Distance sensor
+  Serial.begin (9600);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
 }
 
 
@@ -161,38 +172,25 @@ void setup() {
 // ***********************************************************************************************************
 void loop()
 {
+  // Distance sensor
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(5);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  pinMode(echoPin, INPUT);
+  duration = pulseIn(echoPin, HIGH);
+  distance = (duration/2) / 29.1;
 
-  send_1M_pattern(pattern_test_red, 10, 500);
-  delay(500);
-  send_1M_pattern(pattern_test_blue, 10, 500);
-  delay(500);
-  send_1M_pattern(pattern_test_green, 10, 500);
-  delay(500);
-  send_1M_pattern(pattern_test_white, 10, 500);
-  delay(500);
-  send_1M_pattern(pattern_test_comet1, 10, 70);
-  delay(500);
-  send_1M_pattern(pattern_test_comet2, 10, 70);
-  delay(500);
-  send_1M_pattern(pattern_test_comet3, 10, 70);
-  delay(500);
+  // Desired framerate
+  fr = distance * 5;
 
-
-
-  while (1)
-  {
-    send_1M_pattern(pattern_test_rainbow, 10, 70);
+  // Light it up!
+  if (distance < 50) {
+    send_1M_pattern(pattern_test_rainbow, 10, fr);
+  } else {
+    reset_strip();
   }
-
-
-  /*
-  frame++;
-    if(frame<=10) LEDSTRIP_PATTERN_0();
-    if(10<frame<=20) LEDSTRIP_PATTERN_0();
-    if(20<frame<=30) LEDSTRIP_PATTERN_0();
-    if(frame>30) frame=1;
-   */
-  //delay(1);
 }
 
 
