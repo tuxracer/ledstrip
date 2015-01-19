@@ -22,12 +22,12 @@
 #include <avr/pgmspace.h>
 
 // ******** DEBUG ==== should auto config to adapt different mother board *********
-//#define DATA_1 (PORTF |=  0X01)    // DATA 1    // for ATMEGA
-//#define DATA_0 (PORTF &=  0XFE)    // DATA 0    // for ATMEGA
-//#define STRIP_PINOUT DDRF=0xFF  // for ATMEGA
-#define DATA_1 (PORTC |=  0X01)    // DATA 1    // for UNO
-#define DATA_0 (PORTC &=  0XFE)    // DATA 0    // for UNO
-#define STRIP_PINOUT (DDRC=0xFF)    // for UNO
+#define DATA_1 (PORTF |=  0X01)    // DATA 1    // for ATMEGA
+#define DATA_0 (PORTF &=  0XFE)    // DATA 0    // for ATMEGA
+#define STRIP_PINOUT DDRF=0xFF  // for ATMEGA
+// #define DATA_1 (PORTC |=  0X01)    // DATA 1    // for UNO
+// #define DATA_0 (PORTC &=  0XFE)    // DATA 0    // for UNO
+// #define STRIP_PINOUT (DDRC=0xFF)    // for UNO
 
 PROGMEM const unsigned long pattern_test_red[10][10]={
   {0xff0000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000},
